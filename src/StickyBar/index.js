@@ -37,28 +37,31 @@ export default class StickyBar extends React.Component<tProps, tState> {
   forceSelfTopUpdate = false
   forceSelfTopUpdate = false
   selfHeight: number
-  constructor(props) {
+  constructor(props: tProps) {
     super(props)
 
-    if (this.props.options.onlyUp !== undefined)
-      this.onlyUp = this.props.options.onlyUp
-    if (this.props.options.forceTriggerTopUpdate !== undefined)
-      this.forceTriggerTopUpdate = this.props.options.forceTriggerTopUpdate
-    if (this.props.options.forceSelfTopUpdate !== undefined)
-      this.forceSelfTopUpdate = this.props.options.forceSelfTopUpdate
+    let options = this.props.options || {}
+
+    if (options.onlyUp !== undefined) this.onlyUp = options.onlyUp
+    if (options.forceTriggerTopUpdate !== undefined)
+      this.forceTriggerTopUpdate = options.forceTriggerTopUpdate
+    if (options.forceSelfTopUpdate !== undefined)
+      this.forceSelfTopUpdate = options.forceSelfTopUpdate
   }
   componentDidMount() {
     if (typeof document !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll, false)
+
+      let options = this.props.options || {}
 
       this.selfHeight = this.ref.offsetHeight
 
       let triggerTop = 0
       let selfTop = 0
 
-      if (this.props.options.triggerClass) {
+      if (options.triggerClass) {
         this.triggerEl = document.getElementsByClassName(
-          this.props.options.triggerClass,
+          options.triggerClass,
         )[0]
 
         triggerTop = this.triggerEl.offsetTop
@@ -73,21 +76,22 @@ export default class StickyBar extends React.Component<tProps, tState> {
       this.setState({ triggerTop, triggerTopBeforeMoved: triggerTop, selfTop })
     }
   }
-  getSnapshotBeforeUpdate(prevProps, prevState) {
+  getSnapshotBeforeUpdate(prevProps: tProps, prevState: tState) {
     let snapshot = {}
+    let options = this.props.options || {}
     let currentTriggerTop = this.triggerEl.offsetTop
     let currentSelfTop = this.ref.offsetTop
 
     if (
       (currentTriggerTop !== prevState.triggerTop && !prevState.hasMoved) ||
-      (!this.forceTriggerTopUpdate && this.props.options.forceTriggerTopUpdate)
+      (!this.forceTriggerTopUpdate && options.forceTriggerTopUpdate)
     ) {
       snapshot.newTriggerTop = currentTriggerTop
     }
 
     if (
       (currentSelfTop !== prevState.selfTop && !prevState.hasMoved) ||
-      (!this.forceSelfTopUpdate && this.props.options.forceSelfTopUpdate)
+      (!this.forceSelfTopUpdate && options.forceSelfTopUpdate)
     ) {
       snapshot.newSelfTop = currentSelfTop
     }
@@ -98,7 +102,7 @@ export default class StickyBar extends React.Component<tProps, tState> {
 
     return null
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps: tProps, prevState: tState, snapshot?: {}) {
     if (snapshot !== null && (snapshot.newTriggerTop || snapshot.newSelfTop)) {
       this.setState({
         triggerTop: snapshot.newTriggerTop || prevState.triggerTop,
