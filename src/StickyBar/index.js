@@ -5,10 +5,11 @@ import Container from './index.style'
 type tProps = {
   children: any,
   options: {
-    onlyUp: boolean, // only activates when scrolling up, defaults to true
+    onlyUp?: boolean, // only activates when scrolling up, defaults to true
     triggerClass?: string, // if you don't want the sticky aspect to trigger until after a certain element, pass the className used by that element
     styles?: {},
     activeStyles?: {},
+    hiddenStyles?: {},
     forceTriggerTopUpdate?: boolean,
     forceSelfTopUpdate?: boolean,
   },
@@ -144,8 +145,6 @@ export default class StickyBar extends React.Component<tProps, tState> {
           hasMoved = false
         }
 
-        console.log(reachedSelf)
-
         return {
           scrollTop,
           position,
@@ -169,6 +168,7 @@ export default class StickyBar extends React.Component<tProps, tState> {
           position: this.state.position,
           styles: options ? options.styles || {} : {},
           activeStyles: options ? options.activeStyles || {} : {},
+          hiddenStyles: options ? options.hiddenStyles || {} : {},
         }}
       >
         {this.props.children}

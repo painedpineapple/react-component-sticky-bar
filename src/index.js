@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { injectGlobal } from 'react-emotion'
 //
 import StickyBar from './StickyBar'
-import customStyles, { P } from './styles'
+import customStyles, { P, activeStyles, hiddenStyles } from './styles'
 
 injectGlobal({
   body: {
@@ -23,9 +23,11 @@ class App extends React.Component {
 
         <StickyBar
           options={{
-            triggerClass: this.triggerClass,
-            styles: customStyles,
+            //             triggerClass: this.triggerClass,
             //             onlyUp: false,
+            styles: customStyles,
+            activeStyles,
+            hiddenStyles,
           }}
         >
           Hello World
