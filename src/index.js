@@ -18,15 +18,19 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <StickyBar
-          options={{
-            //triggerClass: this.triggerClass,
-            styles: customStyles,
-          }}
-        />
         <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
         <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
 
+        <StickyBar
+          options={{
+            triggerClass: this.triggerClass,
+            styles: customStyles,
+            onlyUp: false,
+          }}
+        />
+
+        <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
+        <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
         <P
           className={this.triggerClass}
           style={{ borderTop: '1px solid red' }}
