@@ -3,12 +3,14 @@ import React from 'react'
 import Container from './index.style'
 
 type tProps = {
+  children: any,
   options: {
     onlyUp: boolean, // only activates when scrolling up, defaults to true
     triggerClass?: string, // if you don't want the sticky aspect to trigger until after a certain element, pass the className used by that element
     styles?: {},
     activeStyles?: {},
     forceTriggerTopUpdate?: boolean,
+    forceSelfTopUpdate?: boolean,
   },
 }
 
@@ -16,6 +18,7 @@ type tState = {
   scrollTop: number,
   position: 'default' | 'hidden' | 'active',
   triggerTop: number,
+  selfTop: number, // will be the same as triggerTop when no alt trigger is provided (via triggerClass)
   hasMoved: boolean, // not isSticky because
 }
 
@@ -30,6 +33,8 @@ export default class StickyBar extends React.Component<tProps, tState> {
   triggerIsSelf = false
   onlyUp = true
   forceTriggerTopUpdate = false
+  forceSelfTopUpdate = false
+  forceSelfTopUpdate = false
   selfHeight: number
   constructor(props) {
     super(props)
@@ -38,8 +43,8 @@ export default class StickyBar extends React.Component<tProps, tState> {
       this.onlyUp = this.props.options.onlyUp
     if (this.props.options.forceTriggerTopUpdate !== undefined)
       this.forceTriggerTopUpdate = this.props.options.forceTriggerTopUpdate
-
-    //     this.ref = React.createRef()
+    if (this.props.options.forceSelfTopUpdate !== undefined)
+      this.forceSelfTopUpdate = this.props.options.forceSelfTopUpdate
   }
   componentDidMount() {
     if (typeof document !== 'undefined') {
@@ -48,6 +53,7 @@ export default class StickyBar extends React.Component<tProps, tState> {
       this.selfHeight = this.ref.offsetHeight
 
       let triggerTop = 0
+      let selfTop = 0
 
       if (this.props.options.triggerClass) {
         this.triggerEl = document.getElementsByClassName(
@@ -55,32 +61,48 @@ export default class StickyBar extends React.Component<tProps, tState> {
         )[0]
 
         triggerTop = this.triggerEl.offsetTop
+        selfTop = this.ref.offsetTop
       } else {
         this.triggerIsSelf = true
         this.triggerEl = this.ref
         triggerTop = this.ref.offsetTop
+        selfTop = triggerTop
       }
 
-      this.setState({ triggerTop, triggerTopBeforeMoved: triggerTop })
+      this.setState({ triggerTop, triggerTopBeforeMoved: triggerTop, selfTop })
     }
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
     let snapshot = {}
     let currentTriggerTop = this.triggerEl.offsetTop
+    let currentSelfTop = this.ref.offsetTop
 
     if (
       (currentTriggerTop !== prevState.triggerTop && !prevState.hasMoved) ||
       (!this.forceTriggerTopUpdate && this.props.options.forceTriggerTopUpdate)
     ) {
       snapshot.newTriggerTop = currentTriggerTop
+    }
+
+    if (
+      (currentSelfTop !== prevState.selfTop && !prevState.hasMoved) ||
+      (!this.forceSelfTopUpdate && this.props.options.forceSelfTopUpdate)
+    ) {
+      snapshot.newSelfTop = currentSelfTop
+    }
+
+    if (Object.keys(snapshot).length === 0 && snapshot.constructor === Object) {
       return snapshot
     }
 
     return null
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (snapshot !== null && snapshot.newTriggerTop) {
-      this.setState({ triggerTop: snapshot.newTriggerTop })
+    if (snapshot !== null && (snapshot.newTriggerTop || snapshot.newSelfTop)) {
+      this.setState({
+        triggerTop: snapshot.newTriggerTop || prevState.triggerTop,
+        selfTop: snapshot.newSelfTop || prevState.selfTop,
+      })
     }
   }
   componentWillUnmount() {
@@ -99,24 +121,8 @@ export default class StickyBar extends React.Component<tProps, tState> {
         let hasMoved = prevState.hasMoved
 
         const scrollIsPastTriggerTop = scrollTop >= prevState.triggerTop
-        const scrollIsPastTriggerBottom =
-          scrollTop >= this.triggerEl.offsetHeight + prevState.triggerTop
         const scrollingUp = scrollTop < prevState.scrollTop
-        const pastSelf = scrollTop > this.ref.offsetHeight + this.ref.offsetTop
-
-        // this.triggerIsSelf
-        // this.onlyUp
-        // prevState.triggerTop
-        // prevState.hasMoved
-
-        //         console.log(
-        //           'position: ',
-        //           this.state.position,
-        //           'scrollIsPastTriggerTop',
-        //           scrollIsPastTriggerTop,
-        //           'onlyUp',
-        //           this.onlyUp,
-        //         )
+        const reachedSelf = scrollTop >= prevState.selfTop
 
         if (
           (this.onlyUp && scrollingUp && scrollIsPastTriggerTop) ||
@@ -125,7 +131,7 @@ export default class StickyBar extends React.Component<tProps, tState> {
           position = 'active'
           hasMoved = true
         } else if (
-          (!this.triggerIsSelf && pastSelf) ||
+          (!this.triggerIsSelf && reachedSelf) ||
           (this.triggerIsSelf &&
             this.onlyUp &&
             !scrollingUp &&
@@ -137,6 +143,8 @@ export default class StickyBar extends React.Component<tProps, tState> {
           position = 'default'
           hasMoved = false
         }
+
+        console.log(reachedSelf)
 
         return {
           scrollTop,
@@ -163,7 +171,7 @@ export default class StickyBar extends React.Component<tProps, tState> {
           activeStyles: options ? options.activeStyles || {} : {},
         }}
       >
-        Hello World
+        {this.props.children}
       </Container>
     )
   }

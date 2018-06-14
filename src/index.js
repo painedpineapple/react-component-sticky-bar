@@ -25,9 +25,11 @@ class App extends React.Component {
           options={{
             triggerClass: this.triggerClass,
             styles: customStyles,
-            onlyUp: false,
+            //             onlyUp: false,
           }}
-        />
+        >
+          Hello World
+        </StickyBar>
 
         <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
         <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
