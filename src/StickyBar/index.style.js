@@ -1,6 +1,8 @@
 import styled from 'react-emotion'
 
 export default styled('div')(({ options: o }) => ({
+  position: 'relative',
+
   ...scrollingProps(o),
 
   ...o.styles,
