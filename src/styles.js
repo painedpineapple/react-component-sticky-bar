@@ -1,18 +1,19 @@
-import styled from 'react-emotion'
+import styled from "react-emotion";
 
 export default {
   padding: 20,
-  backgroundColor: '#fff',
-}
+  backgroundColor: "#fff"
+};
 
-export const hiddenStyles = {}
+export const hiddenStyles = {};
+export const readyStyles = {};
 
 export const activeStyles = {
-  boxShadow: '1px 1px 16px rgba(0, 0, 0, 0.12)',
-}
+  boxShadow: "1px 1px 16px rgba(0, 0, 0, 0.12)"
+};
 
-export const P = styled('p')(() => ({
-  maxWidth: '800px',
+export const P = styled("p")(() => ({
+  maxWidth: "800px",
   fontSize: 18,
-  margin: 30,
-}))
+  margin: 30
+}));
