@@ -1,51 +1,51 @@
-import styled from "react-emotion";
+import styled from 'react-emotion'
 
-export default styled("div")(({ options: o }) => ({
-  position: "relative",
+export default styled('div')(props => ({
+  position: 'relative',
 
-  ...scrollingProps(o),
+  ...scrollingProps(props),
 
-  ...o.styles
-}));
+  ...props.styles,
+}))
 
-function scrollingProps(o) {
-  switch (o.position) {
-    case "hidden":
+function scrollingProps(props) {
+  switch (props.position) {
+    case 'hidden':
       return {
-        position: "sticky",
+        position: 'sticky',
         zIndex: 10,
         top: 0,
         left: 0,
         right: 0,
-        transform: `translateY(-${o.selfHeight}px)`,
+        transform: `translateY(-${props.selfHeight}px)`,
 
-        ...o.disabledStyles
-      };
-    case "ready":
+        ...props.disabledStyles,
+      }
+    case 'ready':
       return {
-        position: "sticky",
-        transition: "transform 0.5s ease",
+        position: 'sticky',
+        transition: 'transform 0.5s ease',
         zIndex: 10,
         top: 0,
         left: 0,
         right: 0,
-        transform: `translateY(-${o.selfHeight}px)`,
+        transform: `translateY(-${props.selfHeight}px)`,
 
-        ...o.readyStyles
-      };
-    case "active": {
+        ...props.readyStyles,
+      }
+    case 'active': {
       return {
-        position: "sticky",
-        transition: "transform 0.5s ease",
+        position: 'sticky',
+        transition: 'transform 0.5s ease',
         zIndex: 10,
         top: 0,
         left: 0,
         right: 0,
 
-        ...o.activeStyles
-      };
+        ...props.activeStyles,
+      }
     }
     default:
-      return {};
+      return {}
   }
 }
