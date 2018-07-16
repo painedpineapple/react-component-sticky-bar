@@ -19,7 +19,6 @@ injectGlobal({
 })
 
 class App extends React.Component {
-  triggerClass = 'sticky-bar-waypoint-trigger'
   render() {
     return (
       <div>
@@ -28,8 +27,6 @@ class App extends React.Component {
 
         <StickyBar
           {...{
-            // triggerClass: this.triggerClass,
-            // onlyUp: false,
             styles: customStyles,
             activeStyles,
             readyStyles,
@@ -39,20 +36,9 @@ class App extends React.Component {
           Hello World
         </StickyBar>
 
-        <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
-        <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
-        <P
-          className={this.triggerClass}
-          style={{ borderTop: '1px solid red' }}
-          key={faker.random.uuid()}
-        >
-          {faker.lorem.paragraph()}
-        </P>
-        <div style={{ marginTop: 80 }}>
-          {_.times(20, () => (
-            <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
-          ))}
-        </div>
+        {_.times(20, () => (
+          <P key={faker.random.uuid()}>{faker.lorem.paragraph()}</P>
+        ))}
       </div>
     )
   }

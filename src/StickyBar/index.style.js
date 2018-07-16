@@ -9,38 +9,34 @@ export default styled('div')(props => ({
 }))
 
 function scrollingProps(props) {
+  const common = {
+    position: 'sticky',
+    zIndex: 10,
+    top: 0,
+    left: 0,
+    right: 0,
+  }
+
   switch (props.position) {
     case 'hidden':
       return {
-        position: 'sticky',
-        zIndex: 10,
-        top: 0,
-        left: 0,
-        right: 0,
+        ...common,
         transform: `translateY(-${props.selfHeight}px)`,
 
         ...props.disabledStyles,
       }
     case 'ready':
       return {
-        position: 'sticky',
+        ...common,
         transition: 'transform 0.5s ease',
-        zIndex: 10,
-        top: 0,
-        left: 0,
-        right: 0,
         transform: `translateY(-${props.selfHeight}px)`,
 
         ...props.readyStyles,
       }
     case 'active': {
       return {
-        position: 'sticky',
+        ...common,
         transition: 'transform 0.5s ease',
-        zIndex: 10,
-        top: 0,
-        left: 0,
-        right: 0,
 
         ...props.activeStyles,
       }
